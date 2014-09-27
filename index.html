@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>React Starter</title>
+  <script src="http://fb.me/react-0.11.2.js"></script>
+  <script src="http://fb.me/JSXTransformer-0.11.2.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="text/jsx">
+
+    /** @jsx React.DOM */
+    var ButtonAddOne = React.createClass({
+      
+      // appellé à la première instanciation
+      getInitialState: function(){
+        return {current: this.props.current};
+      },
+   
+      addOne: function (ev) {
+        var n = parseInt(this.refs.toadd.getDOMNode().value); 
+        if(isNaN(n)) return;
+        this.setState({
+          current: parseInt(this.state.current) + n 
+        });
+      },
+
+      // appellé à chaque instanciation sauf la première (changement)
+//      componentWillReceiveProps: function(newProps, oldProps){
+//        this.setState(this.getInitialState(newProps));
+//      },
+  
+      render: function () {
+        return (
+        <div>
+            <input type="text" ref="toadd"/>
+            <button onClick={this.addOne}> Increment</button> 
+            <span >{this.state.current}</span>
+        </div>
+        ) 
+      }  
+    });
+
+    var Layout1 = React.createClass({
+      render: function() {
+        return (
+          <div>
+            <h1>Hello, {this.props.name} !</h1>
+            <ButtonAddOne current="10" />
+            <ButtonAddOne current="2" />
+          </div>
+
+        );
+      }
+    });
+
+    React.renderComponent(
+      <Layout1 name="Wamigo" />,
+      document.getElementById('app')
+    );
+
+  </script>
+</body>
+</html>
