@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <title>React Starter</title>
-  <script src="http://fb.me/react-0.11.2.js"></script>
-  <script src="http://fb.me/JSXTransformer-0.11.2.js"></script>
+  <script src="reactjs.js"></script>
+  <script src="jsxt.js"></script>
 </head>
 <body>
   <div id="app"></div>
@@ -13,6 +13,8 @@
     /** @jsx React.DOM */
     var ButtonAddOne = React.createClass({
       
+      // ajouter les props par defauts
+
       // appellé à la première instanciation
       getInitialState: function(){
         return {current: this.props.current};
@@ -24,6 +26,7 @@
         this.setState({
           current: parseInt(this.state.current) + n 
         });
+        this.props.onSubmit(this.props.id, this.state.current);
       },
 
       // appellé à chaque instanciation sauf la première (changement)
@@ -42,13 +45,56 @@
       }  
     });
 
+
+    var Tracer = React.createClass({
+      
+      // appellé à la première instanciation
+      getInitialState: function(){
+        return {data: []};
+      },
+      
+
+       
+      render: function () {
+        if (this.state.data.length === 0) {
+            return (<div>no logs</div>);
+        }
+        
+        return (
+            <table>
+                {this.state.data.map(function (row) {
+                    return <TraceRow data={row} />;
+                })}
+            </table>
+        );
+      }  
+    });
+
+
+    var TracerRow = React.createClass({
+        render : function () {
+            <tr>
+                <td>{this.props.data['emiter']}</td>
+                <td>{this.props.data['value']}</td>
+            </tr>
+        }
+    });
+
+
+
     var Layout1 = React.createClass({
+      
+      dataSubmitted: function (data) {
+        console.log('subcomponent event', data);
+      },
+
       render: function() {
         return (
           <div>
             <h1>Hello, {this.props.name} !</h1>
-            <ButtonAddOne current="10" />
-            <ButtonAddOne current="2" />
+            <ButtonAddOne current="10" id="plop" onSubmit={this.dataSubmitted} />
+            <ButtonAddOne current="2" id="plip" />
+            <Tracer   />
           </div>
 
         );
