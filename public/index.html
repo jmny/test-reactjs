@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>React Starter</title>
-  <script src="react.js"></script>
+  <script src="react-with-addons.js"></script>
   <script src="jsxt.js"></script>
 </head>
 <body>
@@ -49,21 +49,23 @@
     var Tracer = React.createClass({
       
       // appellé à la première instanciation
-      getInitialState: function(){
-        return {data: []};
-      },
+      //getInitialState: function(){
+      //  return {data: []};
+      //},
       
 
        
       render: function () {
-        if (this.state.data.length === 0) {
+        console.log("tracer render", this.props, this.state);
+
+        if (this.props.data.length === 0) {
             return (<div>no logs</div>);
         }
         
         return (
             <table>
-                {this.state.data.map(function (row) {
-                    return <TraceRow data={row} />;
+                {this.props.data.map(function (row) {
+                    return <TracerRow data={row} />;
                 })}
             </table>
         );
@@ -73,28 +75,45 @@
 
     var TracerRow = React.createClass({
         render : function () {
-            <tr>
+            return (<tr>
                 <td>{this.props.data['emiter']}</td>
                 <td>{this.props.data['value']}</td>
-            </tr>
+            </tr>);
         }
     });
 
 
 
+
+
+
+
+
+
     var Layout1 = React.createClass({
       
-      dataSubmitted: function (data) {
-        console.log('subcomponent event', data);
+      getInitialState: function(){
+        return {data: []};
       },
 
+      dataSubmitted: function (id, value) {
+        //XXX:remove forceUpdate
+        //this.state.data.push({"emiter" : id, "value" : value});
+        //this.forceUpdate();
+        this.setState(
+            React.addons.update(this.state, {data: {$push: [{"emiter" : id, "value" : value}]}}) 
+        );
+      },
+
+
       render: function() {
+        console.log("layout render", this.props, this.state);
         return (
           <div>
             <h1>Hello, {this.props.name} !</h1>
-            <ButtonAddOne current="10" id="plop" onSubmit={this.dataSubmitted} />
-            <ButtonAddOne current="2" id="plip" />
-            <Tracer   />
+            <ButtonAddOne current="10" id="1" onSubmit={this.dataSubmitted} />
+            <ButtonAddOne current="2" id="2" onSubmit={this.dataSubmitted} />
+            <Tracer data={this.state.data}  />
           </div>
 
         );
